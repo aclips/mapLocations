@@ -23,8 +23,6 @@ class Map {
             this.container = container;
         }
 
-        console.log(this.container);
-
         this.image = params.image
 
         this.itemWrapperId = params.itemWrapperId
@@ -60,10 +58,19 @@ class Map {
         document.addEventListener("dragstart", (e) => {
             this.container.classList.add("ready-to-drop")
             e.dataTransfer.setData("id", e.target.getAttribute('data-id'))
+
+            this.container.style.cursor = 'grab'
+            this.container.style.removeProperty('user-select')
+
+            document.removeEventListener('mousemove', mouseMoveHandler)
+            document.removeEventListener('mouseup', mouseUpHandler)
         })
 
         document.addEventListener("dragend", (e) => {
             this.container.classList.remove("ready-to-drop")
+
+            document.addEventListener('mousemove', mouseMoveHandler)
+            document.addEventListener('mouseup', mouseUpHandler)
         })
 
         document.addEventListener("dragover", (e) => {
@@ -160,6 +167,8 @@ class Map {
     setItems(items) {
         this.itemContainer.innerHTML = '';
 
+        document.querySelectorAll('.map .item').forEach(e => e.remove());
+
         for (let i in items) {
             let item = items[i]
             let complexId = this.itemWrapperId + '_' + item.id
@@ -193,11 +202,18 @@ class Map {
     }
 
     addPoint(item) {
-
         let element = document.createElement('div')
+
+        element.draggable = true
+        element.setAttribute('data-id', item.id)
+
+        let complexId = this.itemWrapperId + '_' + item.id
+
+        element.id = complexId
         element.classList.add('item')
         element.style.top = item.onMap.y - 10 + 'px'
         element.style.left = item.onMap.x - 10 + 'px'
+
         this.mapContainer.appendChild(element)
     }
 
