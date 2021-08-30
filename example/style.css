@@ -18,7 +18,7 @@ h1 {
     border: 4px solid #cecece;
 }
 
-.map-locations.ready-to-drop{
+.map-locations.ready-to-drop {
     border-style: dashed;
     border-color: #424040;
 }
@@ -33,11 +33,20 @@ h1 {
 
 .item-container {
     width: 200px;
-    height: 400px;
+    height: 380px;
     overflow: hidden;
     border: 4px solid #cecece;
+    padding: 10px;
 }
 
-.selected {
-    color: red;
+.itemElement {
+    background: #eee;
+    padding: 5px;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 2px;
+}
+
+.itemElement[draggable="true"] {
+    cursor: grab;
 }
