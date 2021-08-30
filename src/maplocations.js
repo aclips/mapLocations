@@ -33,6 +33,8 @@ class Map {
     }
 
     build() {
+        let self = this
+
         this.container.classList.add("map-locations")
 
         const mapContainer = document.createElement("div")
@@ -144,24 +146,28 @@ class Map {
          */
         const ZOOM_SPEED = 0.1
 
-        let zoom = 1
+        this.zoom = 1
+        this.itemScale = 1
 
         this.container.addEventListener("wheel", function (e) {
             e.preventDefault();
 
             if (e.deltaY > 0) {
-                zoom -= ZOOM_SPEED
+                self.zoom -= ZOOM_SPEED
+                self.itemScale += ZOOM_SPEED
             } else {
-                zoom += ZOOM_SPEED
+                self.zoom += ZOOM_SPEED
+                self.itemScale -= ZOOM_SPEED
             }
 
-            mapImage.style.transform = `scale(${zoom})`
+            mapContainer.style.transform = `scale(${self.zoom})`
         })
 
         this.mapContainer = mapContainer
         this.mapImage = mapImage
         this.itemWrapper = itemWrapper
         this.itemContainer = itemContainer
+
     }
 
     setItems(items) {
@@ -213,7 +219,7 @@ class Map {
         element.classList.add('item')
         element.style.top = item.onMap.y - 10 + 'px'
         element.style.left = item.onMap.x - 10 + 'px'
-
+        element.style.transform = `scale(${this.itemScale})`
         this.mapContainer.appendChild(element)
     }
 
