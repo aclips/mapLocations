@@ -2,8 +2,12 @@ h1 {
     text-align: center;
 }
 
+.template {
+    text-align: center;
+}
+
 #MAP_ID {
-    margin: auto;
+    display: inline-block;
 }
 
 .map-locations {
@@ -12,4 +16,28 @@ h1 {
     overflow: hidden;
     cursor: grab;
     border: 4px solid #cecece;
+}
+
+.map-locations.ready-to-drop{
+    border-style: dashed;
+    border-color: #424040;
+}
+
+.map-locations .map {
+    position: relative;
+}
+
+#ITEMS_ID {
+    display: inline-block;
+}
+
+.item-container {
+    width: 200px;
+    height: 400px;
+    overflow: hidden;
+    border: 4px solid #cecece;
+}
+
+.selected {
+    color: red;
 }

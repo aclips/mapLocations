@@ -1,14 +1,17 @@
 class Map {
 
     constructor(params) {
-        this.id = params.id
+        this.mapWrapperId = params.mapWrapperId
         this.image = params.image
+
+        this.itemWrapperId = params.itemWrapperId
+        this.items = params.items
 
         this.build()
     }
 
     build() {
-        const container = document.getElementById(this.id)
+        const container = document.getElementById(this.mapWrapperId)
         container.classList.add("map-locations")
 
         const mapContainer = document.createElement("div")
@@ -19,10 +22,65 @@ class Map {
         mapImage.style.pointerEvents = "none"
 
         mapContainer.appendChild(mapImage)
+
         container.appendChild(mapContainer)
 
         /**
-         * Drag
+         * Map items
+         */
+        const itemContainer = document.getElementById(this.itemWrapperId)
+        const items = document.createElement("div")
+        items.classList.add("item-container")
+
+        for (let i in this.items) {
+            let item = this.items[i]
+            let complexId = this.itemWrapperId + '_' + item.id
+
+            let itemElement = document.createElement("div")
+
+            itemElement.classList.add("itemElement")
+            itemElement.draggable = true
+            itemElement.id = complexId
+
+            // @TODO сделать шаблон
+            // label
+            let itemName = document.createElement("div")
+            itemName.innerHTML = item.label
+
+            itemElement.appendChild(itemName)
+
+            items.appendChild(itemElement)
+        }
+
+        itemContainer.appendChild(items)
+
+        document.addEventListener("dragstart", function (e) {
+            container.classList.add("ready-to-drop")
+            e.dataTransfer.setData("id", e.target.id)
+        });
+
+        document.addEventListener("dragend", function (e) {
+            container.classList.remove("ready-to-drop")
+        });
+
+        document.addEventListener("dragover", function (e) {
+            e.preventDefault()
+        });
+
+        document.addEventListener("drop", function (e) {
+            e.preventDefault()
+
+            if (e.target.className == "map") {
+                let itemId = e.dataTransfer.getData("id");
+                let item = document.getElementById(itemId)
+
+                // e.target.appendChild(item)
+
+            }
+        });
+
+        /**
+         * Drag map
          */
 
         container.style.cursor = 'grab'
@@ -60,21 +118,25 @@ class Map {
             document.removeEventListener('mouseup', mouseUpHandler)
         }
 
-        /**
-         * Zoom
-         */
+        container.addEventListener('mousedown', mouseDownHandler)
 
-        let zoom = 1
+        /**
+         * Zoom map
+         */
         const ZOOM_SPEED = 0.1
 
-        container.addEventListener('mousedown', mouseDownHandler)
+        let zoom = 1
+
         container.addEventListener("wheel", function (e) {
+            e.preventDefault();
+
             if (e.deltaY > 0) {
-                mapImage.style.transform = `scale(${zoom -= ZOOM_SPEED})`;
+                zoom -= ZOOM_SPEED
             } else {
-                mapImage.style.transform = `scale(${zoom += ZOOM_SPEED})`;
+                zoom += ZOOM_SPEED
             }
 
+            mapImage.style.transform = `scale(${zoom})`
         })
     }
 

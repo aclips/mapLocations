@@ -11,14 +11,33 @@
 
 <h1>Пример Расположения элементов на карте</h1>
 
-<div id="MAP_ID"></div>
+<div class="template">
+    <div id="MAP_ID"></div>
+    <div id="ITEMS_ID"></div>
+</div>
 
 <script src="../src/maplocations.js"></script>
 
 <script>
     let map = new Map({
-        id: 'MAP_ID',
+        mapWrapperId: 'MAP_ID',
         image: './images/map_1.jpg',
+        itemWrapperId: 'ITEMS_ID',
+        items: [
+            {
+                id: 'u1',
+                label: 'Первая штука',
+                //image: '...'
+            },
+            {
+                id: 'u2',
+                label: 'Вторая штука',
+            },
+            {
+                id: 'u3',
+                label: 'Третья штука',
+            },
+        ]
     })
 </script>
 </body>
