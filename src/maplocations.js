@@ -31,6 +31,7 @@ class Map {
         this.items = params.items
 
         this.build()
+        this.setItems(this.items)
     }
 
     build() {
@@ -50,44 +51,24 @@ class Map {
         /**
          * Map items
          */
-        const itemContainer = document.getElementById(this.itemWrapperId)
-        const items = document.createElement("div")
-        items.classList.add("item-container")
+        const itemWrapper = document.getElementById(this.itemWrapperId)
+        const itemContainer = document.createElement("div")
+        itemContainer.classList.add("item-container")
 
-        for (let i in this.items) {
-            let item = this.items[i]
-            let complexId = this.itemWrapperId + '_' + item.id
-
-            let itemElement = document.createElement("div")
-
-            itemElement.classList.add("itemElement")
-            itemElement.draggable = true
-            itemElement.id = complexId
-
-            // @TODO сделать шаблон
-            // label
-            let itemName = document.createElement("div")
-            itemName.innerHTML = item.label
-
-            itemElement.appendChild(itemName)
-
-            items.appendChild(itemElement)
-        }
-
-        itemContainer.appendChild(items)
+        itemWrapper.appendChild(itemContainer)
 
         document.addEventListener("dragstart", (e) => {
             this.container.classList.add("ready-to-drop")
             e.dataTransfer.setData("id", e.target.id)
-        });
+        })
 
         document.addEventListener("dragend", (e) => {
-            container.classList.remove("ready-to-drop")
-        });
+            this.container.classList.remove("ready-to-drop")
+        })
 
         document.addEventListener("dragover", (e) => {
             e.preventDefault()
-        });
+        })
 
         document.addEventListener("drop", (e) => {
             e.preventDefault()
@@ -160,6 +141,38 @@ class Map {
 
             mapImage.style.transform = `scale(${zoom})`
         })
+
+        this.mapContainer = mapContainer
+        this.mapImage = mapImage
+        this.itemWrapper = itemWrapper
+        this.itemContainer = itemContainer
+    }
+
+    setItems(items) {
+        this.itemContainer.innerHTML = '';
+
+        for (let i in items) {
+            let item = items[i]
+            let complexId = this.itemWrapperId + '_' + item.id
+
+            let itemElement = document.createElement("div")
+
+            itemElement.classList.add("itemElement")
+            itemElement.draggable = true
+            itemElement.id = complexId
+
+            // @TODO сделать шаблон
+            // label
+            let itemLabel = document.createElement("div")
+            itemLabel.classList.add("label")
+            itemLabel.innerHTML = item.label
+
+            itemElement.appendChild(itemLabel)
+
+            this.itemContainer.appendChild(itemElement)
+        }
+
+        this.itemWrapper.appendChild(this.itemContainer)
     }
 
 }
