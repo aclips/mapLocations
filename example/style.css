@@ -1,0 +1,15 @@
+h1 {
+    text-align: center;
+}
+
+#MAP_ID {
+    margin: auto;
+}
+
+.map-locations {
+    width: 800px;
+    height: 400px;
+    overflow: hidden;
+    cursor: grab;
+    border: 4px solid #cecece;
+}
