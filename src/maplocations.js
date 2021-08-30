@@ -1,7 +1,30 @@
 class Map {
 
-    constructor(params) {
-        this.mapWrapperId = params.mapWrapperId
+    /**
+     * @type HTMLElement
+     */
+    container;
+
+    /**
+     * @param {HTMLElement|String} container HTML element or its ID
+     * @param {Object} params
+     * @param {String} params.image
+     * @param {String} params.itemWrapperId
+     * @param {Array} params.items
+     */
+    constructor(container, params) {
+
+        if(typeof container === 'string') {
+            this.container = document.getElementById(container)
+            if(!this.container) {
+                throw new Error('container parameter is not valid ID')
+            }
+        } else {
+            this.container = container;
+        }
+
+        console.log(this.container);
+
         this.image = params.image
 
         this.itemWrapperId = params.itemWrapperId
@@ -11,8 +34,7 @@ class Map {
     }
 
     build() {
-        const container = document.getElementById(this.mapWrapperId)
-        container.classList.add("map-locations")
+        this.container.classList.add("map-locations")
 
         const mapContainer = document.createElement("div")
         mapContainer.classList.add("map")
@@ -23,7 +45,7 @@ class Map {
 
         mapContainer.appendChild(mapImage)
 
-        container.appendChild(mapContainer)
+        this.container.appendChild(mapContainer)
 
         /**
          * Map items
@@ -54,20 +76,20 @@ class Map {
 
         itemContainer.appendChild(items)
 
-        document.addEventListener("dragstart", function (e) {
-            container.classList.add("ready-to-drop")
+        document.addEventListener("dragstart", (e) => {
+            this.container.classList.add("ready-to-drop")
             e.dataTransfer.setData("id", e.target.id)
         });
 
-        document.addEventListener("dragend", function (e) {
+        document.addEventListener("dragend", (e) => {
             container.classList.remove("ready-to-drop")
         });
 
-        document.addEventListener("dragover", function (e) {
+        document.addEventListener("dragover", (e) => {
             e.preventDefault()
         });
 
-        document.addEventListener("drop", function (e) {
+        document.addEventListener("drop", (e) => {
             e.preventDefault()
 
             if (e.target.className == "map") {
@@ -83,17 +105,17 @@ class Map {
          * Drag map
          */
 
-        container.style.cursor = 'grab'
+        this.container.style.cursor = 'grab'
 
         let pos = {top: 0, left: 0, x: 0, y: 0}
 
-        const mouseDownHandler = function (e) {
-            container.style.cursor = 'grabbing'
-            container.style.userSelect = 'none'
+        const mouseDownHandler = (e) => {
+            this.container.style.cursor = 'grabbing'
+            this.container.style.userSelect = 'none'
 
             pos = {
-                left: container.scrollLeft,
-                top: container.scrollTop,
+                left: this.container.scrollLeft,
+                top: this.container.scrollTop,
                 x: e.clientX,
                 y: e.clientY,
             }
@@ -102,23 +124,23 @@ class Map {
             document.addEventListener('mouseup', mouseUpHandler)
         }
 
-        const mouseMoveHandler = function (e) {
+        const mouseMoveHandler = (e) => {
             const dx = e.clientX - pos.x
             const dy = e.clientY - pos.y
 
-            container.scrollTop = pos.top - dy
-            container.scrollLeft = pos.left - dx
+            this.container.scrollTop = pos.top - dy
+            this.container.scrollLeft = pos.left - dx
         }
 
-        const mouseUpHandler = function () {
-            container.style.cursor = 'grab'
-            container.style.removeProperty('user-select')
+        const mouseUpHandler = () => {
+            this.container.style.cursor = 'grab'
+            this.container.style.removeProperty('user-select')
 
             document.removeEventListener('mousemove', mouseMoveHandler)
             document.removeEventListener('mouseup', mouseUpHandler)
         }
 
-        container.addEventListener('mousedown', mouseDownHandler)
+        this.container.addEventListener('mousedown', mouseDownHandler)
 
         /**
          * Zoom map
@@ -127,7 +149,7 @@ class Map {
 
         let zoom = 1
 
-        container.addEventListener("wheel", function (e) {
+        this.container.addEventListener("wheel", function (e) {
             e.preventDefault();
 
             if (e.deltaY > 0) {
