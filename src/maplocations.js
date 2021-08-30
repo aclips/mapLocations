@@ -59,7 +59,7 @@ class Map {
 
         document.addEventListener("dragstart", (e) => {
             this.container.classList.add("ready-to-drop")
-            e.dataTransfer.setData("id", e.target.id)
+            e.dataTransfer.setData("id", e.target.getAttribute('data-id'))
         })
 
         document.addEventListener("dragend", (e) => {
@@ -75,10 +75,19 @@ class Map {
 
             if (e.target.className == "map") {
                 let itemId = e.dataTransfer.getData("id");
-                let item = document.getElementById(itemId)
 
-                // e.target.appendChild(item)
+                let targetItem = this.items.find(function(element){
+                    return element.id == itemId
+                })
 
+                if(targetItem) {
+                    targetItem.onMap = {
+                        x: e.layerX,
+                        y: e.layerY,
+                    }
+                }
+
+                this.setItems(this.items)
             }
         });
 
@@ -158,8 +167,16 @@ class Map {
             let itemElement = document.createElement("div")
 
             itemElement.classList.add("itemElement")
-            itemElement.draggable = true
+
+            if(item.onMap == false){
+                itemElement.draggable = true
+            } else {
+                this.addPoint(item)
+            }
+
+            itemElement.setAttribute('data-id', item.id)
             itemElement.id = complexId
+
 
             // @TODO сделать шаблон
             // label
@@ -173,6 +190,15 @@ class Map {
         }
 
         this.itemWrapper.appendChild(this.itemContainer)
+    }
+
+    addPoint(item) {
+
+        let element = document.createElement('div')
+        element.classList.add('item')
+        element.style.top = item.onMap.y - 10 + 'px'
+        element.style.left = item.onMap.x - 10 + 'px'
+        this.mapContainer.appendChild(element)
     }
 
 }

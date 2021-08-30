@@ -25,6 +25,15 @@ h1 {
 
 .map-locations .map {
     position: relative;
+    display: inherit;
+}
+
+.map .item {
+    width: 25px;
+    height: 25px;
+    background: red;
+    border-radius: 20px;
+    position: absolute;
 }
 
 #ITEMS_ID {
@@ -45,8 +54,10 @@ h1 {
     font-size: 12px;
     text-align: left;
     margin-bottom: 2px;
+    color: red;
 }
 
 .itemElement[draggable="true"] {
     cursor: grab;
+    color: green;
 }
