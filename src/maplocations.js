@@ -8,11 +8,12 @@ class Map {
         this.items = params.items
 
         this.build()
+        this.setItems(this.items)
     }
 
     build() {
-        const container = document.getElementById(this.mapWrapperId)
-        container.classList.add("map-locations")
+        const mapWrapper = document.getElementById(this.mapWrapperId)
+        mapWrapper.classList.add("map-locations")
 
         const mapContainer = document.createElement("div")
         mapContainer.classList.add("map")
@@ -23,44 +24,24 @@ class Map {
 
         mapContainer.appendChild(mapImage)
 
-        container.appendChild(mapContainer)
+        mapWrapper.appendChild(mapContainer)
 
         /**
          * Map items
          */
-        const itemContainer = document.getElementById(this.itemWrapperId)
-        const items = document.createElement("div")
-        items.classList.add("item-container")
+        const itemWrapper = document.getElementById(this.itemWrapperId)
+        const itemContainer = document.createElement("div")
+        itemContainer.classList.add("item-container")
 
-        for (let i in this.items) {
-            let item = this.items[i]
-            let complexId = this.itemWrapperId + '_' + item.id
-
-            let itemElement = document.createElement("div")
-
-            itemElement.classList.add("itemElement")
-            itemElement.draggable = true
-            itemElement.id = complexId
-
-            // @TODO сделать шаблон
-            // label
-            let itemName = document.createElement("div")
-            itemName.innerHTML = item.label
-
-            itemElement.appendChild(itemName)
-
-            items.appendChild(itemElement)
-        }
-
-        itemContainer.appendChild(items)
+        itemWrapper.appendChild(itemContainer)
 
         document.addEventListener("dragstart", function (e) {
-            container.classList.add("ready-to-drop")
+            mapWrapper.classList.add("ready-to-drop")
             e.dataTransfer.setData("id", e.target.id)
         });
 
         document.addEventListener("dragend", function (e) {
-            container.classList.remove("ready-to-drop")
+            mapWrapper.classList.remove("ready-to-drop")
         });
 
         document.addEventListener("dragover", function (e) {
@@ -83,17 +64,17 @@ class Map {
          * Drag map
          */
 
-        container.style.cursor = 'grab'
+        mapWrapper.style.cursor = 'grab'
 
         let pos = {top: 0, left: 0, x: 0, y: 0}
 
         const mouseDownHandler = function (e) {
-            container.style.cursor = 'grabbing'
-            container.style.userSelect = 'none'
+            mapWrapper.style.cursor = 'grabbing'
+            mapWrapper.style.userSelect = 'none'
 
             pos = {
-                left: container.scrollLeft,
-                top: container.scrollTop,
+                left: mapWrapper.scrollLeft,
+                top: mapWrapper.scrollTop,
                 x: e.clientX,
                 y: e.clientY,
             }
@@ -106,19 +87,19 @@ class Map {
             const dx = e.clientX - pos.x
             const dy = e.clientY - pos.y
 
-            container.scrollTop = pos.top - dy
-            container.scrollLeft = pos.left - dx
+            mapWrapper.scrollTop = pos.top - dy
+            mapWrapper.scrollLeft = pos.left - dx
         }
 
         const mouseUpHandler = function () {
-            container.style.cursor = 'grab'
-            container.style.removeProperty('user-select')
+            mapWrapper.style.cursor = 'grab'
+            mapWrapper.style.removeProperty('user-select')
 
             document.removeEventListener('mousemove', mouseMoveHandler)
             document.removeEventListener('mouseup', mouseUpHandler)
         }
 
-        container.addEventListener('mousedown', mouseDownHandler)
+        mapWrapper.addEventListener('mousedown', mouseDownHandler)
 
         /**
          * Zoom map
@@ -127,7 +108,7 @@ class Map {
 
         let zoom = 1
 
-        container.addEventListener("wheel", function (e) {
+        mapWrapper.addEventListener("wheel", function (e) {
             e.preventDefault();
 
             if (e.deltaY > 0) {
@@ -138,6 +119,39 @@ class Map {
 
             mapImage.style.transform = `scale(${zoom})`
         })
+
+        this.mapWrapper = mapWrapper
+        this.mapContainer = mapContainer
+        this.mapImage = mapImage
+        this.itemWrapper = itemWrapper
+        this.itemContainer = itemContainer
+    }
+
+    setItems(items) {
+        this.itemContainer.innerHTML = '';
+
+        for (let i in items) {
+            let item = items[i]
+            let complexId = this.itemWrapperId + '_' + item.id
+
+            let itemElement = document.createElement("div")
+
+            itemElement.classList.add("itemElement")
+            itemElement.draggable = true
+            itemElement.id = complexId
+
+            // @TODO сделать шаблон
+            // label
+            let itemLabel = document.createElement("div")
+            itemLabel.classList.add("label")
+            itemLabel.innerHTML = item.label
+
+            itemElement.appendChild(itemLabel)
+
+            this.itemContainer.appendChild(itemElement)
+        }
+
+        this.itemWrapper.appendChild(this.itemContainer)
     }
 
 }
