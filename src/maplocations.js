@@ -14,9 +14,9 @@ class Map {
      */
     constructor(container, params) {
 
-        if(typeof container === 'string') {
+        if (typeof container === 'string') {
             this.container = document.getElementById(container)
-            if(!this.container) {
+            if (!this.container) {
                 throw new Error('container parameter is not valid ID')
             }
         } else {
@@ -33,7 +33,14 @@ class Map {
     }
 
     build() {
+        const ZOOM_SPEED = 0.1
+
         let self = this
+
+        this.zoom = 1
+        this.itemScale = 1
+        this.translateX = 0
+        this.translateY = 0
 
         this.container.classList.add("map-locations")
 
@@ -59,20 +66,17 @@ class Map {
 
         document.addEventListener("dragstart", (e) => {
             this.container.classList.add("ready-to-drop")
+            document.removeEventListener('mousemove', mouseMoveHandler)
+            document.removeEventListener('mouseup', mouseUpHandler)
+
             e.dataTransfer.setData("id", e.target.getAttribute('data-id'))
 
             this.container.style.cursor = 'grab'
             this.container.style.removeProperty('user-select')
-
-            document.removeEventListener('mousemove', mouseMoveHandler)
-            document.removeEventListener('mouseup', mouseUpHandler)
         })
 
         document.addEventListener("dragend", (e) => {
-            this.container.classList.remove("ready-to-drop")
 
-            document.addEventListener('mousemove', mouseMoveHandler)
-            document.addEventListener('mouseup', mouseUpHandler)
         })
 
         document.addEventListener("dragover", (e) => {
@@ -85,19 +89,21 @@ class Map {
             if (e.target.className == "map") {
                 let itemId = e.dataTransfer.getData("id");
 
-                let targetItem = this.items.find(function(element){
+                let targetItem = this.items.find(function (element) {
                     return element.id == itemId
                 })
 
-                if(targetItem) {
+                if (targetItem) {
                     targetItem.onMap = {
                         x: e.layerX,
                         y: e.layerY,
                     }
                 }
 
-                this.setItems(this.items)
+               this.setItems(this.items)
             }
+
+            this.container.classList.remove("ready-to-drop")
         });
 
         /**
@@ -113,8 +119,8 @@ class Map {
             this.container.style.userSelect = 'none'
 
             pos = {
-                left: this.container.scrollLeft,
-                top: this.container.scrollTop,
+                left: self.translateX,
+                top: self.translateY,
                 x: e.clientX,
                 y: e.clientY,
             }
@@ -127,8 +133,10 @@ class Map {
             const dx = e.clientX - pos.x
             const dy = e.clientY - pos.y
 
-            this.container.scrollTop = pos.top - dy
-            this.container.scrollLeft = pos.left - dx
+            self.translateX = pos.left + dx
+            self.translateY = pos.top + dy
+
+            mapContainer.style.transform = `translate(${self.translateX}px,${self.translateY}px) scale(${self.zoom})`
         }
 
         const mouseUpHandler = () => {
@@ -144,11 +152,6 @@ class Map {
         /**
          * Zoom map
          */
-        const ZOOM_SPEED = 0.1
-
-        this.zoom = 1
-        this.itemScale = 1
-
         this.container.addEventListener("wheel", function (e) {
             e.preventDefault();
 
@@ -160,7 +163,7 @@ class Map {
                 self.itemScale -= ZOOM_SPEED
             }
 
-            mapContainer.style.transform = `scale(${self.zoom})`
+            mapContainer.style.transform = `translate(${self.translateX}px,${self.translateY}px) scale(${self.zoom})`
         })
 
         this.mapContainer = mapContainer
@@ -183,7 +186,7 @@ class Map {
 
             itemElement.classList.add("itemElement")
 
-            if(item.onMap == false){
+            if (item.onMap == false) {
                 itemElement.draggable = true
             } else {
                 this.addPoint(item)

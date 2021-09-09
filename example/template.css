@@ -23,19 +23,6 @@ h1 {
     border-color: #424040;
 }
 
-.map-locations .map {
-    position: relative;
-    display: inherit;
-}
-
-.map .item {
-    width: 25px;
-    height: 25px;
-    background: red;
-    border-radius: 20px;
-    position: absolute;
-}
-
 #ITEMS_ID {
     display: inline-block;
 }
