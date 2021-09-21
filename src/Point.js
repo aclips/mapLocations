@@ -3,7 +3,10 @@ class Point {
     id;
     label;
     image;
-    position;
+    position = {
+        x: null,
+        y: null
+    };
     posted = false;
 
     /**
@@ -19,9 +22,8 @@ class Point {
         this.image = params.image
 
         if (typeof params.position == 'object') {
-            this.position = params.position
-
-            if (this.position.x && this.position.y) {
+            if (params.position.x && params.position.y) {
+                this.position = params.position
                 this.posted = true
             }
         }
