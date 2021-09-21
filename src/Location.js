@@ -39,10 +39,6 @@ class Location {
         } else {
             throw new Error('Points must be an array.');
         }
-
-        this.container = document.createElement("div")
-        this.container.classList.add("map")
-        this.container.style.position = 'relative';
     }
 
     /**
@@ -69,6 +65,10 @@ class Location {
      */
     render(container) {
 
+        this.container = document.createElement("div")
+        this.container.classList.add("map")
+        this.container.style.position = 'relative';
+
         this.renderLocation()
         this.renderPoints()
 
@@ -84,6 +84,13 @@ class Location {
     }
 
     renderPoints() {
+
+        let oldPoints = this.container.getElementsByClassName('point')
+
+        for (let oldPoint of oldPoints) {
+            oldPoint.remove()
+        }
+
         for (let point of this.points) {
             let pointNode = document.createElement('div')
             pointNode.setAttribute('data-id', point.id)
@@ -94,7 +101,7 @@ class Location {
             pointNode.style.background = 'red';
             pointNode.style.borderRadius = '20px';
             pointNode.style.position = 'absolute';
-            console.log(point.position)
+
             pointNode.style.left = point.position.x + 'px'
             pointNode.style.top = point.position.y + 'px'
 
