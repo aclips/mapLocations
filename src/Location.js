@@ -69,7 +69,7 @@ class Location {
         this.container = document.createElement("div")
         this.container.classList.add("map")
         this.container.style.position = 'relative'
-        this.container.style.overflow = 'hidden'
+        this.container.style.overflow = 'scroll'
 
         if (width) {
             this.container.style.width = width
@@ -106,14 +106,16 @@ class Location {
             pointNode.setAttribute('data-id', point.id)
             pointNode.classList.add('point')
 
-            pointNode.style.width = '25px';
-            pointNode.style.height = '25px';
-            pointNode.style.background = 'red';
-            pointNode.style.borderRadius = '20px';
-            pointNode.style.position = 'absolute';
-
+            pointNode.style.width = '25px'
+            pointNode.style.height = '25px'
+            pointNode.style.background = '#d9d9d9'
+            pointNode.style.borderRadius = '20px'
+            pointNode.style.position = 'absolute'
+            pointNode.style.backgroundImage = 'url(' + point.image + ')'
+            pointNode.style.backgroundSize = 'contain'
             pointNode.style.left = point.position.x + 'px'
             pointNode.style.top = point.position.y + 'px'
+            pointNode.style.border = '2px solid #868686'
 
             this.container.appendChild(pointNode)
         }
