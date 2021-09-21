@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Map locations</title>
+</head>
+
+<body>
+
+<h1>Пример Расположения элементов на карте</h1>
+
+<div class="template">
+    <div id="MAP_ID"></div>
+</div>
+
+
+<script type="module">
+    import Map from '../src/Map.js'
+
+    let map = new Map('MAP_ID', {
+        size: {
+            width: '600px',
+            height: '300px'
+        },
+        locations: [
+            {
+                id: 'floor_1',
+                name: 'Этаж 1',
+                image: './images/map_1.jpg',
+                points: [
+                    {
+                        id: 1,
+                        label: 'Иван',
+                        image: './images/1.png',
+                        position: {
+                            x: 100,
+                            y: 100
+                        }
+                    },
+                    {
+                        id: 2,
+                        label: 'Виктор',
+                        image: './images/2.png',
+                        position: {
+                            x: 200,
+                            y: 200
+                        }
+                    },
+                    {
+                        id: 3,
+                        label: 'Пётр',
+                        image: './images/3.png',
+                        position: {
+                            x: null,
+                            y: null
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'floor_2',
+                name: 'Этаж 2',
+                image: './images/map_1.jpg',
+                points: [
+                    {
+                        id: 1,
+                        label: 'Иван',
+                        image: './images/4.png',
+                        position: {
+                            x: 100,
+                            y: 100
+                        }
+                    },
+                    {
+                        id: 2,
+                        label: 'Анна',
+                        image: './images/5.jpg',
+                        position: {
+                            x: 200,
+                            y: 200
+                        }
+                    },
+                    {
+                        id: 3,
+                        label: 'Ольга',
+                        image: './images/6.png',
+                        position: {
+                            x: null,
+                            y: null
+                        }
+                    }
+                ]
+            }
+        ]
+    })
+</script>
+</body>
+
+</html>
