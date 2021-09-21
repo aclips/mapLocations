@@ -3,7 +3,7 @@
     display: inherit;
 }
 
-.map .item {
+.map-locations .map .item {
     width: 25px;
     height: 25px;
     background: red;
@@ -11,6 +11,6 @@
     position: absolute;
 }
 
-.map .tmp-item {
+.map-locations .map .tmp-item {
     transition: 0.1s;
 }

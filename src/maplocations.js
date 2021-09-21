@@ -88,30 +88,32 @@ class Map {
             e.preventDefault()
 
             // От тени
-            // if (e.target.classList.contains('map')) {
-            //     let params = targetMapItem.getBoundingClientRect()
-            //
-            //     let x = e.layerX - (params.width / 2)
-            //     let y = e.layerY - (params.height / 2)
-            //
-            //     targetMapItem.style.left = x + "px"
-            //     targetMapItem.style.top = y + "px"
-            // }
+            if (targetMapItem && e.target.classList.contains('map')) {
+                let params = targetMapItem.getBoundingClientRect()
 
+                let x = e.layerX - (params.width / 2)
+                let y = e.layerY - (params.height / 2)
+
+                targetMapItem.style.left = x + "px"
+                targetMapItem.style.top = y + "px"
+            }
         })
 
         document.addEventListener("dragstart", (e) => {
             let id = e.target.getAttribute('data-id')
 
             // От тени
-            // targetMapItem = e.target.cloneNode(true)
-            // targetMapItem.setAttribute('data-id', 'tmp')
-            // targetMapItem.classList.add('tmp-item')
-            // this.mapContainer.appendChild(targetMapItem)
-            //
-            // e.target.style.width = '1px'
-            // e.target.style.height = '1px'
-            // e.target.style.transform = `scale(0.1)`
+            if(e.target.classList.contains('item')){
+                targetMapItem = e.target.cloneNode(true)
+                targetMapItem.setAttribute('data-id', 'tmp')
+                targetMapItem.id = 'TMP_ITEM'
+                targetMapItem.classList.add('tmp-item')
+                this.mapContainer.appendChild(targetMapItem)
+
+                e.target.style.width = '1px'
+                e.target.style.height = '1px'
+                e.target.style.transform = `scale(0.1)`
+            }
 
             this.container.classList.add("ready-to-drop")
             e.dataTransfer.setData("id", id)
