@@ -19,22 +19,49 @@ class Map {
         if (typeof container === 'string') {
             this.container = document.getElementById(container)
             if (!this.container) {
-                throw new Error('container parameter is not valid ID')
+                throw new Error('Container parameter is not valid ID.')
             }
         } else {
             this.container = container;
         }
 
-        if(typeof params.size == 'object') {
+        if (typeof params.size == 'object') {
             this.size = params.size
         }
 
-        if(typeof params.locations == 'object' && params.locations.length > 0){
-            for(let location of params.locations){
-                this.locations.push(new Location(location))
+        if (Array.isArray(params.locations)) {
+            for (let location of params.locations) {
+                this.addLocation(location)
             }
+        } else {
+            throw new Error('Locations must be an array.');
+        }
+    }
+
+    /**
+     * Добавление локации
+     *
+     * @param {Object} location
+     * @param {string} location.id
+     * @param {string} location.name
+     * @param {string} location.image
+     * @param {{width:string, height:string}} location.size
+     * @param {[]} location.points
+     */
+    addLocation(location) {
+        if(this.locations.filter((l)=> l.id == location.id).length > 0){
+            throw new Error('Locations id must be unique ');
         }
 
+        this.locations.push(new Location(location))
+    }
+
+    /**
+     * Получение коллекции локаций карты
+     * @returns {[Location]}
+     */
+    getLocations() {
+        return this.locations
     }
 }
 

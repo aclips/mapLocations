@@ -17,6 +17,10 @@ class Point {
      * @param {{x:string, y:string}} params.position
      */
     constructor(params) {
+        if (!params.id) {
+            throw new Error('Pocation parameter is not valid ID.')
+        }
+
         this.id = params.id
         this.label = params.label
         this.image = params.image
@@ -27,6 +31,15 @@ class Point {
                 this.posted = true
             }
         }
+    }
+
+    /**
+     * Проверка присутствия точки в локации
+     *
+     * @returns {boolean}
+     */
+    isPosted() {
+        return this.posted === true
     }
 }
 

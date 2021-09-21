@@ -5,8 +5,8 @@ class Location {
     name;
     image;
     size = {
-        width: '500px',
-        height: '100px'
+        width: null,
+        height: null
     };
     points = [];
 
@@ -19,6 +19,10 @@ class Location {
      * @param {[]} params.points
      */
     constructor(params) {
+        if (!params.id) {
+            throw new Error('Location parameter is not valid ID.')
+        }
+
         this.id = params.id
         this.name = params.name
         this.image = params.image
@@ -27,11 +31,30 @@ class Location {
             this.size = params.size
         }
 
-        if (typeof params.points == 'object' && params.points.length > 0) {
+        if (Array.isArray(params.points)) {
             for (let point of params.points) {
-                this.points.push(new Point(point))
+                this.addPoint(point)
             }
+        } else {
+            throw new Error('Points must be an array.');
         }
+    }
+
+    /**
+     * Добавление точки
+     *
+     * @param {Object} point
+     * @param {string} point.id
+     * @param {string} point.label
+     * @param {string} point.image
+     * @param {{x:string, y:string}} point.position
+     */
+    addPoint(point) {
+        if (this.points.filter((p) => p.id == point.id).length > 0) {
+            throw new Error('Points id must be unique ');
+        }
+
+        this.points.push(new Point(point))
     }
 }
 
