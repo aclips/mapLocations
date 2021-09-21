@@ -81,7 +81,7 @@ class Map {
             locationNode.remove()
         }
 
-        location.render(this.container)
+        location.render(this.container, this.size.width, this.size.height)
     }
 }
 

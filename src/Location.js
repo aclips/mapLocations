@@ -16,7 +16,6 @@ class Location {
      * @param {string} params.id
      * @param {string} params.name
      * @param {string} params.image
-     * @param {{width:number, height:number}} params.size
      * @param {[]} params.points
      */
     constructor(params) {
@@ -62,12 +61,23 @@ class Location {
     /**
      * Отрисовка локации
      * @param {HTMLElement} container
+     * @param width
+     * @param height
      */
-    render(container) {
+    render(container, width, height) {
 
         this.container = document.createElement("div")
         this.container.classList.add("map")
-        this.container.style.position = 'relative';
+        this.container.style.position = 'relative'
+        this.container.style.overflow = 'hidden'
+
+        if (width) {
+            this.container.style.width = width
+        }
+
+        if (height) {
+            this.container.style.height = height
+        }
 
         this.renderLocation()
         this.renderPoints()
