@@ -14,7 +14,7 @@ class Point {
      * @param {string} params.id
      * @param {string} params.label
      * @param {string} params.image
-     * @param {{x:string, y:string}} params.position
+     * @param {{x:number, y:number}} params.position
      */
     constructor(params) {
         if (!params.id) {

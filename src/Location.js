@@ -15,7 +15,7 @@ class Location {
      * @param {string} params.id
      * @param {string} params.name
      * @param {string} params.image
-     * @param {{width:string, height:string}} params.size
+     * @param {{width:number, height:number}} params.size
      * @param {[]} params.points
      */
     constructor(params) {

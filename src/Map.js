@@ -4,15 +4,15 @@ class Map {
 
     container;
     size = {
-        width: '500px',
-        height: '100px'
+        width: null,
+        height: null
     };
     locations = [];
 
     /**
      * @param {HTMLElement|String} container HTML element or its ID
      * @param {Object} params
-     * @param {{width:string, height:string}} params.size
+     * @param {{width:number, height:number}} params.size
      * @param {[]} params.locations
      */
     constructor(container, params) {
