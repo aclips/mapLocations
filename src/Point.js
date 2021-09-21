@@ -18,18 +18,15 @@ class Point {
      */
     constructor(params) {
         if (!params.id) {
-            throw new Error('Pocation parameter is not valid ID.')
+            throw new Error('Point parameter is not valid ID.')
         }
 
         this.id = params.id
         this.label = params.label
         this.image = params.image
 
-        if (typeof params.position == 'object') {
-            if (params.position.x && params.position.y) {
-                this.position = params.position
-                this.posted = true
-            }
+        if (typeof params.position != 'object' || (!params.position.x || !params.position.y)) {
+            throw new Error('Points must hav positions.')
         }
     }
 

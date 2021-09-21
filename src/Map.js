@@ -49,8 +49,8 @@ class Map {
      * @param {[]} location.points
      */
     addLocation(location) {
-        if(this.locations.filter((l)=> l.id == location.id).length > 0){
-            throw new Error('Locations id must be unique ');
+        if (this.locations.filter((l) => l.id == location.id).length > 0) {
+            throw new Error('Locations id must be unique.');
         }
 
         this.locations.push(new Location(location))
@@ -62,6 +62,20 @@ class Map {
      */
     getLocations() {
         return this.locations
+    }
+
+    /**
+     * Смена локации
+     * @param {string} locationId
+     */
+    changeLocation(locationId) {
+        let location = this.locations.find(l => l.id == locationId)
+
+        if (!location) {
+            throw new Error('Location not found.');
+        }
+
+        location.render()
     }
 }
 

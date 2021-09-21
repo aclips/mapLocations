@@ -56,6 +56,13 @@ class Location {
 
         this.points.push(new Point(point))
     }
+
+    /**
+     * Отрисовка локации
+     */
+    render() {
+        alert('render ' + this.id)
+    }
 }
 
 export default Location

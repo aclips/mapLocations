@@ -10,6 +10,9 @@
 
 <h1>Пример Расположения элементов на карте</h1>
 
+<a class='location-btn' href="#" data-location="floor_1">1 локация</a>
+<a class='location-btn' href="#" data-location="floor_2">2 локация</a>
+
 <div class="template">
     <div id="MAP_ID"></div>
 </div>
@@ -50,7 +53,11 @@
                     {
                         id: 3,
                         label: 'Пётр',
-                        image: './images/3.png'
+                        image: './images/3.png',
+                        position: {
+                            x: 300,
+                            y: 300
+                        }
                     }
                 ]
             },
@@ -80,12 +87,27 @@
                     {
                         id: 3,
                         label: 'Ольга',
-                        image: './images/6.png'
+                        image: './images/6.png',
+                        position: {
+                            x: 300,
+                            y: 300
+                        }
                     }
                 ]
             }
         ]
     })
+
+    let locationButtons = document.getElementsByClassName('location-btn')
+
+    for (let locationButton of locationButtons) {
+        locationButton.addEventListener('click', (e) => {
+            e.preventDefault()
+            let locationId = e.target.getAttribute('data-location')
+            map.changeLocation(locationId)
+        })
+    }
+
 
 </script>
 </body>
