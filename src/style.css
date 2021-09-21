@@ -10,3 +10,7 @@
     border-radius: 20px;
     position: absolute;
 }
+
+.map .tmp-item {
+    transition: 0.1s;
+}

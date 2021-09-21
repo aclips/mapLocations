@@ -23,6 +23,15 @@ h1 {
     border-color: #424040;
 }
 
+.map-locations .map-image {
+    transition: 1s;
+}
+
+.map-locations.ready-to-drop .map-image {
+    opacity: 0.8;
+    filter: grayscale(100);
+}
+
 #ITEMS_ID {
     display: inline-block;
 }

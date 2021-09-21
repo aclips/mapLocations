@@ -49,6 +49,7 @@ class Map {
 
         const mapImage = document.createElement("img")
         mapImage.src = this.image
+        mapImage.classList.add("map-image")
         mapImage.style.pointerEvents = "none"
 
         mapContainer.appendChild(mapImage)
@@ -64,19 +65,63 @@ class Map {
 
         itemWrapper.appendChild(itemContainer)
 
-        document.addEventListener("dragstart", (e) => {
-            this.container.classList.add("ready-to-drop")
-            document.removeEventListener('mousemove', mouseMoveHandler)
-            document.removeEventListener('mouseup', mouseUpHandler)
+        let targetMapItem = null
 
-            e.dataTransfer.setData("id", e.target.getAttribute('data-id'))
+        document.addEventListener("mousedown", (e) => {
+
+            if (e.target.classList.contains('item') && e.target.parentNode.classList.contains('map')) {
+                this.container.classList.add("ready-to-drop")
+                document.removeEventListener('mousemove', mouseMoveHandler)
+                document.removeEventListener('mouseup', mouseUpHandler)
+            }
+        })
+
+        document.addEventListener("mouseup", (e) => {
+
+            if (e.target.classList.contains('item') && e.target.parentNode.classList.contains('map')) {
+                this.container.classList.remove("ready-to-drop")
+                this.container.style.cursor = 'grab'
+            }
+        })
+
+        document.addEventListener("dragover", (e) => {
+            e.preventDefault()
+
+            // От тени
+            // if (e.target.classList.contains('map')) {
+            //     let params = targetMapItem.getBoundingClientRect()
+            //
+            //     let x = e.layerX - (params.width / 2)
+            //     let y = e.layerY - (params.height / 2)
+            //
+            //     targetMapItem.style.left = x + "px"
+            //     targetMapItem.style.top = y + "px"
+            // }
+
+        })
+
+        document.addEventListener("dragstart", (e) => {
+            let id = e.target.getAttribute('data-id')
+
+            // От тени
+            // targetMapItem = e.target.cloneNode(true)
+            // targetMapItem.setAttribute('data-id', 'tmp')
+            // targetMapItem.classList.add('tmp-item')
+            // this.mapContainer.appendChild(targetMapItem)
+            //
+            // e.target.style.width = '1px'
+            // e.target.style.height = '1px'
+            // e.target.style.transform = `scale(0.1)`
+
+            this.container.classList.add("ready-to-drop")
+            e.dataTransfer.setData("id", id)
 
             this.container.style.cursor = 'grab'
             this.container.style.removeProperty('user-select')
         })
 
         document.addEventListener("dragend", (e) => {
-
+            e.preventDefault()
         })
 
         document.addEventListener("dragover", (e) => {
@@ -86,7 +131,9 @@ class Map {
         document.addEventListener("drop", (e) => {
             e.preventDefault()
 
-            if (e.target.className == "map") {
+            let classes = e.target.classList
+
+            if (classes.contains('item') || classes.contains('map')) {
                 let itemId = e.dataTransfer.getData("id");
 
                 let targetItem = this.items.find(function (element) {
@@ -94,13 +141,30 @@ class Map {
                 })
 
                 if (targetItem) {
+                    let x = 0, y = 0
+
+                    if (classes.contains('item')) {
+                        let params = targetMapItem.getBoundingClientRect()
+
+                        x = parseInt(targetMapItem.style.left.replace('px', '')) + (params.width / 2)
+                        y = parseInt(targetMapItem.style.top.replace('px', '')) + (params.height / 2)
+                    } else {
+                        x = e.layerX
+                        y = e.layerY
+                    }
+
                     targetItem.onMap = {
-                        x: e.layerX,
-                        y: e.layerY,
+                        x: x,
+                        y: y,
                     }
                 }
 
-               this.setItems(this.items)
+                this.setItems(this.items)
+
+            }
+
+            if (targetMapItem) {
+                targetMapItem.remove()
             }
 
             this.container.classList.remove("ready-to-drop")
@@ -222,7 +286,7 @@ class Map {
         element.classList.add('item')
         element.style.top = item.onMap.y - 10 + 'px'
         element.style.left = item.onMap.x - 10 + 'px'
-        element.style.transform = `scale(${this.itemScale})`
+        element.style.transform = `scale(1)`
         this.mapContainer.appendChild(element)
     }
 
