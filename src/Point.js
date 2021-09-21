@@ -7,7 +7,6 @@ class Point {
         x: null,
         y: null
     };
-    posted = false;
 
     /**
      * @param {Object} params
@@ -28,15 +27,8 @@ class Point {
         if (typeof params.position != 'object' || (!params.position.x || !params.position.y)) {
             throw new Error('Points must hav positions.')
         }
-    }
 
-    /**
-     * Проверка присутствия точки в локации
-     *
-     * @returns {boolean}
-     */
-    isPosted() {
-        return this.posted === true
+        this.position = params.position
     }
 }
 

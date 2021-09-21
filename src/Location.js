@@ -9,6 +9,7 @@ class Location {
         height: null
     };
     points = [];
+    container;
 
     /**
      * @param {Object} params
@@ -38,6 +39,10 @@ class Location {
         } else {
             throw new Error('Points must be an array.');
         }
+
+        this.container = document.createElement("div")
+        this.container.classList.add("map")
+        this.container.style.position = 'relative';
     }
 
     /**
@@ -57,11 +62,44 @@ class Location {
         this.points.push(new Point(point))
     }
 
+
     /**
      * Отрисовка локации
+     * @param {HTMLElement} container
      */
-    render() {
-        alert('render ' + this.id)
+    render(container) {
+
+        this.renderLocation()
+        this.renderPoints()
+
+        container.appendChild(this.container)
+    }
+
+    renderLocation() {
+        const imageNode = document.createElement("img")
+        imageNode.src = this.image
+        imageNode.classList.add("map-image")
+
+        this.container.appendChild(imageNode)
+    }
+
+    renderPoints() {
+        for (let point of this.points) {
+            let pointNode = document.createElement('div')
+            pointNode.setAttribute('data-id', point.id)
+            pointNode.classList.add('point')
+
+            pointNode.style.width = '25px';
+            pointNode.style.height = '25px';
+            pointNode.style.background = 'red';
+            pointNode.style.borderRadius = '20px';
+            pointNode.style.position = 'absolute';
+            console.log(point.position)
+            pointNode.style.left = point.position.x + 'px'
+            pointNode.style.top = point.position.y + 'px'
+
+            this.container.appendChild(pointNode)
+        }
     }
 }
 

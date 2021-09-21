@@ -75,7 +75,13 @@ class Map {
             throw new Error('Location not found.');
         }
 
-        location.render()
+        let locationNodes = this.container.getElementsByClassName('map')
+
+        for (let locationNode of locationNodes) {
+            locationNode.remove()
+        }
+
+        location.render(this.container)
     }
 }
 
