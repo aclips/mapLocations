@@ -74,11 +74,73 @@ class Location {
         this.container = document.createElement("div")
         this.container.id = 'LOCATION_' + this.id
         this.container.classList.add('location')
+        this.container.style.position = 'absolute'
+        this.container.style.transformOrigin = '0 0'
+
+        this.manageZoom()
 
         this.renderLocation()
         this.renderPoints(this.points)
 
         container.appendChild(this.container)
+    }
+
+    /**
+     * Установка увеличения карты
+     */
+    manageZoom() {
+
+        let container = this.container
+        let scale, parentRect, oldScale, rect, transform
+
+        scale = 1
+        transform = 'matrix(' + 1 + ',0,0,' + 1 + ',' + 0 + ',' + 0 + ')'
+
+        setTimeout(function () {
+            rect = container.getBoundingClientRect();
+        }, 0);
+
+        if (container.addEventListener) {
+            container.removeEventListener('mousewheel', mouseWheelHandler);
+            container.removeEventListener('DOMMouseScroll', mouseWheelHandler);
+
+            container.addEventListener("mousewheel", mouseWheelHandler, false);
+            container.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
+        }
+
+        function mouseWheelHandler(e) {
+            e = window.event || e // old IE support
+
+            let pgX = e.pageX,
+                pgY = e.pageY
+
+            parentRect = container.parentNode.getBoundingClientRect()
+            rect = container.getBoundingClientRect()
+
+            let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
+
+            oldScale = scale
+            scale += (delta / 5)
+
+            if (scale < 0.3) {
+                scale = 0.3
+            }
+            if (scale > 7) {
+                scale = 7
+            }
+
+            let xPercent = ((pgX - rect.left) / rect.width).toFixed(2)
+            let yPercent = ((pgY - rect.top) / rect.height).toFixed(2)
+
+            let left = Math.round(pgX - parentRect.left - (xPercent * (rect.width * scale / oldScale)))
+            let top = Math.round(pgY - parentRect.top - (yPercent * (rect.height * scale / oldScale)))
+
+            transform = 'matrix(' + scale + ',0,0,' + scale + ',' + left + ',' + top + ')'
+
+            container.style.webkitTransform = transform
+            container.style.mozTransform = transform
+            container.style.transform = transform
+        }
     }
 
     renderLocation() {
@@ -88,7 +150,6 @@ class Location {
 
         this.container.appendChild(imageNode)
     }
-
 
     /**
      * Отрисовка точек

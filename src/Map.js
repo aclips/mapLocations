@@ -56,7 +56,7 @@ class Map {
     init() {
         // Инициализация контейнера карты
         this.container.style.position = 'relative'
-        this.container.style.overflow = 'scroll'
+        this.container.style.overflow = 'hidden'
 
         if (this.size.width) {
             this.container.style.width = this.size.width
@@ -65,32 +65,7 @@ class Map {
         if (this.size.height) {
             this.container.style.height = this.size.height
         }
-
-        // Увеличение карт по скроллу
-        const ZOOM_SPEED = 0.1
-
-        let self = this
-
-        this.container.addEventListener("wheel", function (e) {
-            e.preventDefault();
-
-            let location = self.getActiveLocation()
-
-            if (location) {
-                if (e.deltaY > 0) {
-                    self.zoomParams.zoom -= ZOOM_SPEED
-                    self.zoomParams.itemScale += ZOOM_SPEED
-                } else {
-                    self.zoomParams.zoom += ZOOM_SPEED
-                    self.zoomParams.itemScale -= ZOOM_SPEED
-                }
-
-                let container = location.getContainer()
-                container.style.transform = `translate(${self.zoomParams.translateX}px,${self.zoomParams.translateY}px) scale(${self.zoomParams.zoom})`
-            }
-        })
     }
-
 
     /**
      * Добавление локации
@@ -130,14 +105,6 @@ class Map {
         }
 
         location.render(this.container)
-
-        // @TODO вынести сброс zoom'а
-        this.zoomParams = {
-            zoom: 1,
-            itemScale: 1,
-            translateX: 0,
-            translateY: 0
-        }
     }
 
     /**
