@@ -41,7 +41,15 @@ class Location {
     }
 
     /**
-     * Добавление точки
+     * Получение контейнера
+     * @returns {HTMLElement}
+     */
+    getContainer() {
+        return this.container
+    }
+
+    /**
+     * Добавление точки в коллекцию
      *
      * @param {Object} point
      * @param {string} point.id
@@ -57,30 +65,18 @@ class Location {
         this.points.push(new Point(point))
     }
 
-
     /**
      * Отрисовка локации
      * @param {HTMLElement} container
-     * @param width
-     * @param height
      */
-    render(container, width, height) {
+    render(container) {
 
         this.container = document.createElement("div")
-        this.container.classList.add("map")
-        this.container.style.position = 'relative'
-        this.container.style.overflow = 'scroll'
-
-        if (width) {
-            this.container.style.width = width
-        }
-
-        if (height) {
-            this.container.style.height = height
-        }
+        this.container.id = 'LOCATION_' + this.id
+        this.container.classList.add('location')
 
         this.renderLocation()
-        this.renderPoints()
+        this.renderPoints(this.points)
 
         container.appendChild(this.container)
     }
@@ -93,31 +89,56 @@ class Location {
         this.container.appendChild(imageNode)
     }
 
-    renderPoints() {
 
-        let oldPoints = this.container.getElementsByClassName('point')
-
-        for (let oldPoint of oldPoints) {
-            oldPoint.remove()
+    /**
+     * Отрисовка точек
+     * @param {[Point]}points
+     */
+    renderPoints(points) {
+        for (let point of points) {
+            // Удаляем точку, если она уже нарисована
+            this.erasePoint(point)
+            // Рисуем точку
+            this.drawPoint(point)
         }
+    }
 
-        for (let point of this.points) {
-            let pointNode = document.createElement('div')
-            pointNode.setAttribute('data-id', point.id)
-            pointNode.classList.add('point')
+    /**
+     * Рисование точки
+     * @param {Point} point
+     */
+    drawPoint(point) {
+        let pointNode = document.createElement('div')
 
-            pointNode.style.width = '25px'
-            pointNode.style.height = '25px'
-            pointNode.style.background = '#d9d9d9'
-            pointNode.style.borderRadius = '20px'
-            pointNode.style.position = 'absolute'
-            pointNode.style.backgroundImage = 'url(' + point.image + ')'
-            pointNode.style.backgroundSize = 'contain'
-            pointNode.style.left = point.position.x + 'px'
-            pointNode.style.top = point.position.y + 'px'
-            pointNode.style.border = '2px solid #868686'
+        pointNode.id = this.id + '_' + point.id
+        pointNode.setAttribute('data-id', point.id)
+        pointNode.classList.add('point')
 
-            this.container.appendChild(pointNode)
+        // @TODO вынести стили в конфиг
+        pointNode.style.width = '25px'
+        pointNode.style.height = '25px'
+        pointNode.style.background = '#d9d9d9'
+        pointNode.style.borderRadius = '20px'
+        pointNode.style.position = 'absolute'
+        pointNode.style.backgroundImage = 'url(' + point.image + ')'
+        pointNode.style.backgroundSize = 'contain'
+        pointNode.style.left = point.position.x + 'px'
+        pointNode.style.top = point.position.y + 'px'
+        pointNode.style.border = '2px solid #868686'
+
+        this.container.appendChild(pointNode)
+    }
+
+    /**
+     * Удаление нарисованной точки
+     * @param {Point} point
+     */
+    erasePoint(point) {
+        let complexId = this.id + '_' + point.id
+        let pointNode = document.getElementById(complexId)
+
+        if (pointNode) {
+            pointNode.remove()
         }
     }
 }
