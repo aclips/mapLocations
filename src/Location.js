@@ -10,6 +10,11 @@ class Location {
     };
     points = [];
     container;
+    positionParams = {
+        scale: 1,
+        left: 0,
+        top: 0
+    };
 
     /**
      * @param {Object} params
@@ -78,6 +83,7 @@ class Location {
         this.container.style.transformOrigin = '0 0'
 
         this.manageZoom()
+        this.manageMove()
 
         this.renderLocation()
         this.renderPoints(this.points)
@@ -89,64 +95,100 @@ class Location {
      * Установка увеличения карты
      */
     manageZoom() {
+        let parentRect, oldScale, rect
 
-        let container = this.container
-        let scale, parentRect, oldScale, rect, transform
 
-        scale = 1
-        transform = 'matrix(' + 1 + ',0,0,' + 1 + ',' + 0 + ',' + 0 + ')'
 
-        setTimeout(function () {
-            rect = container.getBoundingClientRect();
-        }, 0);
-
-        if (container.addEventListener) {
-            container.removeEventListener('mousewheel', mouseWheelHandler);
-            container.removeEventListener('DOMMouseScroll', mouseWheelHandler);
-
-            container.addEventListener("mousewheel", mouseWheelHandler, false);
-            container.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
-        }
-
-        function mouseWheelHandler(e) {
+        const mouseWheelHandler = (e) => {
             e = window.event || e // old IE support
 
             let pgX = e.pageX,
                 pgY = e.pageY
 
-            parentRect = container.parentNode.getBoundingClientRect()
-            rect = container.getBoundingClientRect()
+            parentRect = this.container.parentNode.getBoundingClientRect()
+            rect = this.container.getBoundingClientRect()
 
             let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
 
-            oldScale = scale
-            scale += (delta / 5)
+            oldScale = this.positionParams.scale
+            this.positionParams.scale += (delta / 5)
 
-            if (scale < 0.3) {
-                scale = 0.3
+            if (this.positionParams.scale < 0.3) {
+                this.positionParams.scale = 0.3
             }
-            if (scale > 7) {
-                scale = 7
+            if (this.positionParams.scale > 7) {
+                this.positionParams.scale = 7
             }
 
             let xPercent = ((pgX - rect.left) / rect.width).toFixed(2)
             let yPercent = ((pgY - rect.top) / rect.height).toFixed(2)
 
-            let left = Math.round(pgX - parentRect.left - (xPercent * (rect.width * scale / oldScale)))
-            let top = Math.round(pgY - parentRect.top - (yPercent * (rect.height * scale / oldScale)))
+            this.positionParams.left = Math.round(pgX - parentRect.left - (xPercent * (rect.width * this.positionParams.scale / oldScale)))
+            this.positionParams.top = Math.round(pgY - parentRect.top - (yPercent * (rect.height * this.positionParams.scale / oldScale)))
 
-            transform = 'matrix(' + scale + ',0,0,' + scale + ',' + left + ',' + top + ')'
+            this.transformContainer(this.positionParams.scale, this.positionParams.left, this.positionParams.top)
+        }
 
-            container.style.webkitTransform = transform
-            container.style.mozTransform = transform
-            container.style.transform = transform
+        if (this.container.addEventListener) {
+            this.container.removeEventListener('mousewheel', mouseWheelHandler);
+            this.container.removeEventListener('DOMMouseScroll', mouseWheelHandler);
+
+            this.container.addEventListener("mousewheel", mouseWheelHandler, false);
+            this.container.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
         }
     }
 
+    transformContainer(scale, left, top) {
+        let transform = 'matrix(' + scale + ',0,0,' + scale + ',' + left + ',' + top + ')'
+
+        this.container.style.webkitTransform = transform
+        this.container.style.mozTransform = transform
+        this.container.style.transform = transform
+    }
+
+    manageMove() {
+        this.container.style.cursor = 'grab'
+
+        let pos = {x: 0, y: 0}
+
+        const mouseDownHandler = (e) => {
+            this.container.style.cursor = 'grabbing'
+            this.container.style.userSelect = 'none'
+
+            pos = {
+                left: this.positionParams.left,
+                top: this.positionParams.top,
+                x: e.clientX,
+                y: e.clientY,
+            }
+
+            this.container.addEventListener('mousemove', mouseMoveHandler)
+            this.container.addEventListener('mouseup', mouseUpHandler)
+        }
+
+        const mouseUpHandler = () => {
+            this.container.style.cursor = 'grab'
+            this.container.removeEventListener('mousemove', mouseMoveHandler)
+            this.container.removeEventListener('mouseup', mouseUpHandler)
+        }
+
+        const mouseMoveHandler = (e) => {
+            const dx = e.clientX - pos.x
+            const dy = e.clientY - pos.y
+
+            this.positionParams.left = pos.left + dx
+            this.positionParams.top = pos.top + dy
+            this.transformContainer(this.positionParams.scale, this.positionParams.left, this.positionParams.top)
+        }
+
+        this.container.addEventListener('mousedown', mouseDownHandler)
+    }
+
     renderLocation() {
-        const imageNode = document.createElement("img")
+        const imageNode = document.createElement('img')
         imageNode.src = this.image
-        imageNode.classList.add("map-image")
+        imageNode.classList.add('map-image')
+        imageNode.style.pointerEvents = 'none'
 
         this.container.appendChild(imageNode)
     }

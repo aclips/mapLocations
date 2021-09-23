@@ -57,14 +57,8 @@ class Map {
         // Инициализация контейнера карты
         this.container.style.position = 'relative'
         this.container.style.overflow = 'hidden'
-
-        if (this.size.width) {
-            this.container.style.width = this.size.width
-        }
-
-        if (this.size.height) {
-            this.container.style.height = this.size.height
-        }
+        this.container.style.width = '100%'
+        this.container.style.height = '100%'
     }
 
     /**
