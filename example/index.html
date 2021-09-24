@@ -14,6 +14,7 @@
 <div class="buttons">
     <a class='location-btn' href="#" data-location="floor_1">1 локация</a>
     <a class='location-btn' href="#" data-location="floor_2">2 локация</a>
+    <a class='location-btn' href="#" data-location="floor_svg">3 локация (svg)</a>
 </div>
 
 <div class="template">
@@ -98,7 +99,41 @@
                         }
                     }
                 ]
-            }
+            },
+            {
+                id: 'floor_svg',
+                name: 'Этаж SVG',
+                image: './images/map_svg.svg',
+                points: [
+                    {
+                        id: 1,
+                        label: 'Иван',
+                        image: './images/1.png',
+                        position: {
+                            x: 400,
+                            y: 400
+                        }
+                    },
+                    {
+                        id: 2,
+                        label: 'Виктор',
+                        image: './images/2.png',
+                        position: {
+                            x: 650,
+                            y: 600
+                        }
+                    },
+                    {
+                        id: 3,
+                        label: 'Пётр',
+                        image: './images/3.png',
+                        position: {
+                            x: 1300,
+                            y: 300
+                        }
+                    }
+                ]
+            },
         ]
     })
 
