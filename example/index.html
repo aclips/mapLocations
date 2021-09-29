@@ -21,6 +21,34 @@
     <div class="map" id="MAP_ID"></div>
 </div>
 
+<div class="api">
+    <div class="example">
+        <div class="label">Удаление точки по id</div>
+        <input type="text" id="delete-id">
+        <button id="api-delete">Удалить</button>
+    </div>
+
+    <div class="example">
+        <div class="label">Добавить точку на карту</div>
+        <input placeholder="id" type="text" id="add-id">
+        <input placeholder="Название" type="text" id="add-name">
+        <input placeholder="url картинки" type="text" id="add-image">
+        <input placeholder="X" type="text" id="add-x">
+        <input placeholder="Y" type="text" id="add-y">
+
+        <button id="api-add">Добавить</button>
+    </div>
+
+    <div class="example">
+        <div class="label">Перемещение точки</div>
+        <input placeholder="id" type="text" id="move-id">
+        <input placeholder="X" type="text" id="move-x">
+        <input placeholder="Y" type="text" id="move-y">
+
+        <button id="api-move">Переместить</button>
+    </div>
+</div>
+
 
 <script type="module">
     import Map from '../src/Map.js'
@@ -147,7 +175,49 @@
         })
     }
 
+    document.getElementById('api-delete').addEventListener('click', (e) => {
+        e.preventDefault()
+        let value = document.getElementById('delete-id').value
 
+        if (value) {
+            let location = map.getActiveLocation()
+            location.deletePoint(value)
+        }
+    })
+
+    document.getElementById('api-add').addEventListener('click', (e) => {
+        e.preventDefault()
+
+        let id = document.getElementById('add-id').value
+        let name = document.getElementById('add-name').value
+        let image = document.getElementById('add-image').value
+        let x = document.getElementById('add-x').value
+        let y = document.getElementById('add-y').value
+
+        let pointParams = {
+            id: id,
+            label: name,
+            image: image,
+            position: {
+                x: x,
+                y: y
+            }
+        }
+
+        let location = map.getActiveLocation()
+        location.addPoint(pointParams)
+    })
+
+    document.getElementById('api-move').addEventListener('click', (e) => {
+        e.preventDefault()
+
+        let id = document.getElementById('move-id').value
+        let x = document.getElementById('move-x').value
+        let y = document.getElementById('move-y').value
+
+        let location = map.getActiveLocation()
+        location.movePoint(id, x, y)
+    })
 </script>
 </body>
 

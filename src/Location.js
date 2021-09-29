@@ -54,22 +54,59 @@ class Location {
     }
 
     /**
-     * Добавление точки в коллекцию
+     * Добавление точки
      *
-     * @param {Object} point
-     * @param {string} point.id
-     * @param {string} point.label
-     * @param {string} point.image
-     * @param {{x:string, y:string}} point.position
+     * @param {Object} pointParams
+     * @param {string} pointParams.id
+     * @param {string} pointParams.label
+     * @param {string} pointParams.image
+     * @param {{x:string, y:string}} pointParams.position
      */
-    addPoint(point) {
-        if (this.points.filter((p) => p.id == point.id).length > 0) {
+    addPoint(pointParams) {
+        if (this.points.filter((p) => p.id == pointParams.id).length > 0) {
             throw new Error('Points id must be unique ');
         }
 
-        this.points.push(new Point(point))
+        let point = new Point(pointParams)
+
+        this.points.push(point)
+
+        if(this.container) {
+            this.drawPoint(point)
+        }
     }
 
+    /**
+     * Удаление точки
+     * @param {string} id
+     */
+    deletePoint(id) {
+
+        let points = this.points.filter((p) => p.id == id)
+
+        if(points.length > 0) {
+            let point = points[0]
+            this.erasePoint(point)
+
+            this.points = this.points.filter((p) => p.id != id)
+        }
+    }
+
+    movePoint(id, x, y){
+        let points = this.points.filter((p) => p.id == id)
+
+        if(points.length > 0) {
+            let point = points[0]
+
+            point.position = {
+                x: x,
+                y: y
+            }
+
+            this.erasePoint(point)
+            this.drawPoint(point)
+        }
+    }
     /**
      * Отрисовка локации
      * @param {HTMLElement} container
@@ -86,7 +123,7 @@ class Location {
         this.manageMove()
 
         this.renderLocation()
-        this.renderPoints(this.points)
+        this.renderAllPoints()
 
         container.appendChild(this.container)
     }
@@ -96,8 +133,6 @@ class Location {
      */
     manageZoom() {
         let parentRect, oldScale, rect
-
-
 
         const mouseWheelHandler = (e) => {
             e = window.event || e // old IE support
@@ -190,15 +225,21 @@ class Location {
         imageNode.classList.add('map-image')
         imageNode.style.pointerEvents = 'none'
 
+        this.positionParams = {
+            scale: 1,
+            left: 0,
+            top: 0
+        }
+
         this.container.appendChild(imageNode)
     }
 
     /**
-     * Отрисовка точек
-     * @param {[Point]}points
+     * Отрисовка всех точек
+     *
      */
-    renderPoints(points) {
-        for (let point of points) {
+    renderAllPoints() {
+        for (let point of this.points) {
             // Удаляем точку, если она уже нарисована
             this.erasePoint(point)
             // Рисуем точку

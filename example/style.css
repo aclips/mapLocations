@@ -31,7 +31,7 @@ h1 {
     text-align: center;
 }
 
-.buttons .location-btn{
+.buttons .location-btn {
     color: #fff;
     font-weight: bold;
     padding: 5px;
@@ -39,3 +39,23 @@ h1 {
     display: inline-block;
     text-decoration: none;
 }
+
+.api {
+    margin: 10px;
+    background-color: #eeeeee;
+    padding: 10px;
+}
+
+.api .example {
+    margin-bottom: 15px;
+}
+
+.api .example .label {
+
+}
+
+.api .example input, .api .example button {
+    display: block;
+    margin-bottom: 5px;
+}
+
