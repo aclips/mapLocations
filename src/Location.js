@@ -118,6 +118,7 @@ class Location {
         this.container.classList.add('location')
         this.container.style.position = 'absolute'
         this.container.style.transformOrigin = '0 0'
+        this.container.style.userSelect = 'none';
 
         this.manageZoom()
         this.manageMove()
@@ -187,6 +188,10 @@ class Location {
         let pos = {x: 0, y: 0}
 
         const mouseDownHandler = (e) => {
+            if(e.target != this.container) {
+                return;
+            }
+
             this.container.style.cursor = 'grabbing'
             this.container.style.userSelect = 'none'
 
@@ -269,6 +274,28 @@ class Location {
         pointNode.style.left = point.position.x + 'px'
         pointNode.style.top = point.position.y + 'px'
         pointNode.style.border = '2px solid #868686'
+
+        // Перемещение точки
+        let lastMouseMoveEvent = null;
+        const onMouseMove = (e) => {
+            let deltaX = e.clientX - lastMouseMoveEvent.clientX;
+            let deltaY = e.clientY - lastMouseMoveEvent.clientY;
+
+            point.position.x = point.position.x + (deltaX / this.positionParams.scale);
+            point.position.y = point.position.y + (deltaY / this.positionParams.scale);
+
+            pointNode.style.left = point.position.x + 'px';
+            pointNode.style.top = point.position.y + 'px';
+
+            lastMouseMoveEvent = e;
+        }
+        pointNode.addEventListener('mousedown', (e) => {
+            lastMouseMoveEvent = e;
+            document.addEventListener('mousemove', onMouseMove);
+        });
+        pointNode.addEventListener('mouseup', () => {
+            document.removeEventListener('mousemove', onMouseMove);
+        });
 
         this.container.appendChild(pointNode)
     }
