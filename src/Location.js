@@ -163,6 +163,10 @@ class Location {
             this.positionParams.top = Math.round(pgY - parentRect.top - (yPercent * (rect.height * this.positionParams.scale / oldScale)))
 
             this.transformContainer(this.positionParams.scale, this.positionParams.left, this.positionParams.top)
+
+            e.stopPropagation();
+            e.preventDefault();
+            e.returnValue = false;
         }
 
         if (this.container.addEventListener) {
