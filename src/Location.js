@@ -229,6 +229,14 @@ class Location {
         this.container.addEventListener('mousedown', mouseDownHandler)
     }
 
+    lock() {
+        this.container.classList.add('lock')
+    }
+
+    unlock() {
+        this.container.classList.remove('lock')
+    }
+
     renderLocation() {
         const imageNode = document.createElement('img')
         imageNode.src = this.image
@@ -296,9 +304,11 @@ class Location {
         }
         pointNode.addEventListener('mousedown', (e) => {
             lastMouseMoveEvent = e;
+            this.lock()
             document.addEventListener('mousemove', onMouseMove);
         });
         pointNode.addEventListener('mouseup', () => {
+            this.unlock()
             document.removeEventListener('mousemove', onMouseMove);
         });
 

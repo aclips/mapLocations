@@ -16,6 +16,10 @@ body::after {
     background-image: url('./images/backmap.jpg');
 }
 
+.location.lock .map-image {
+    filter: grayscale(100%);
+}
+
 h1 {
     color: #4a4a4a;
     text-align: center;
