@@ -71,7 +71,7 @@ class Location {
 
         this.points.push(point)
 
-        if(this.container) {
+        if (this.container) {
             this.drawPoint(point)
         }
     }
@@ -84,7 +84,7 @@ class Location {
 
         let points = this.points.filter((p) => p.id == id)
 
-        if(points.length > 0) {
+        if (points.length > 0) {
             let point = points[0]
             this.erasePoint(point)
 
@@ -92,10 +92,10 @@ class Location {
         }
     }
 
-    movePoint(id, x, y){
+    movePoint(id, x, y) {
         let points = this.points.filter((p) => p.id == id)
 
-        if(points.length > 0) {
+        if (points.length > 0) {
             let point = points[0]
 
             point.position = {
@@ -107,6 +107,7 @@ class Location {
             this.drawPoint(point)
         }
     }
+
     /**
      * Отрисовка локации
      * @param {HTMLElement} container
@@ -192,7 +193,7 @@ class Location {
         let pos = {x: 0, y: 0}
 
         const mouseDownHandler = (e) => {
-            if(e.target != this.container) {
+            if (e.target != this.container) {
                 return;
             }
 
@@ -285,8 +286,8 @@ class Location {
             let deltaX = e.clientX - lastMouseMoveEvent.clientX;
             let deltaY = e.clientY - lastMouseMoveEvent.clientY;
 
-            point.position.x = point.position.x + (deltaX / this.positionParams.scale);
-            point.position.y = point.position.y + (deltaY / this.positionParams.scale);
+            point.position.x = parseFloat(point.position.x) + (deltaX / this.positionParams.scale);
+            point.position.y = parseFloat(point.position.y) + (deltaY / this.positionParams.scale);
 
             pointNode.style.left = point.position.x + 'px';
             pointNode.style.top = point.position.y + 'px';
