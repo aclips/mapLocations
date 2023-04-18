@@ -367,6 +367,14 @@ class Location {
     }
 
     /**
+     * Получение всех точек на карте
+     * @returns {Point[]}
+     */
+    getPoints() {
+        return this.points
+    }
+
+    /**
      * Получение точки по id
      * @param {string} id
      * @returns {Point|null}
@@ -397,13 +405,13 @@ class Location {
 
             this.transformContainer(this.positionParams.scale, this.positionParams.left, this.positionParams.top)
 
-            let pointNodeSelector = '#'+this.id + '_' + point.id
+            let pointNodeSelector = '#' + this.id + '_' + point.id
             let pointNode = this.container.querySelector(pointNodeSelector)
 
-            if(pointNode) {
+            if (pointNode) {
                 pointNode.classList.add('found')
 
-                setTimeout(function(){
+                setTimeout(function () {
                     pointNode.classList.remove('found')
                 }, 200)
             }

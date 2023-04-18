@@ -19,6 +19,7 @@
 
 <div class="template">
     <div class="map" id="MAP_ID"></div>
+    <div class="panel" id="PANEL"></div>
 </div>
 
 <div class="api">
@@ -66,6 +67,10 @@
 
 <script type="module">
     import Map from '../src/Map.js'
+    import Panel from '../src/Panel.js'
+
+    // Доступность редактирования
+    const canEdit = false
 
     let map = new Map('MAP_ID', {
         size: {
@@ -78,6 +83,7 @@
                 id: 'floor_1',
                 name: 'Этаж 1',
                 image: './images/map_1.jpg',
+                editable: canEdit,
                 points: [
                     {
                         id: 1,
@@ -112,6 +118,7 @@
                 id: 'floor_2',
                 name: 'Этаж 2',
                 image: './images/map_2.jpg',
+                editable: canEdit,
                 points: [
                     {
                         id: 1,
@@ -146,6 +153,7 @@
                 id: 'floor_svg',
                 name: 'Этаж SVG',
                 image: './images/map_svg.svg',
+                editable: canEdit,
                 points: [
                     {
                         id: 1,
@@ -179,6 +187,27 @@
         ]
     })
 
+    let panel = new Panel('PANEL', map, {
+        editable: canEdit,
+        labels: {
+            panelName: 'Список пользователей',
+            emptyMap: 'Карта пустая',
+            saveBtn: 'Сохранить',
+            addUserBtn: 'Добавить',
+        },
+        callback: {
+            save: (e, context) => {
+                alert('callback сохранения')
+            },
+            add: (e, context) => {
+                alert('callback добавления')
+            },
+        }
+    })
+
+    /**
+     * API examples
+     */
     let locationButtons = document.getElementsByClassName('location-btn')
 
     for (let locationButton of locationButtons) {
@@ -186,6 +215,14 @@
             e.preventDefault()
             let locationId = e.target.getAttribute('data-location')
             map.changeLocation(locationId)
+
+            let location = map.getActiveLocation()
+
+            if (location.isEditable()) {
+                panel.setEditMode()
+            } else {
+                panel.setViewMode()
+            }
         })
     }
 
@@ -249,7 +286,7 @@
 
         let location = map.getActiveLocation()
         location.setViewMode()
-
+        panel.setViewMode()
     })
 
     document.getElementById('api-edit_mode').addEventListener('click', (e) => {
@@ -257,6 +294,7 @@
 
         let location = map.getActiveLocation()
         location.setEditMode()
+        panel.setEditMode()
     })
 </script>
 </body>
