@@ -22,10 +22,24 @@
 </div>
 
 <div class="api">
+
+    <div class="example">
+        <div class="label">Изменение режима</div>
+
+        <button id="api-edit_mode">Режим редактирования</button>
+        <button id="api-view_mode">Режим просмотра</button>
+    </div>
+
     <div class="example">
         <div class="label">Удаление точки по id</div>
-        <input type="text" id="delete-id">
+        <input placeholder="id" type="text" id="delete-id">
         <button id="api-delete">Удалить</button>
+    </div>
+
+    <div class="example">
+        <div class="label">Перемещение к точке по id</div>
+        <input placeholder="id" type="text" id="show-id">
+        <button id="api-show_point">Переместиться</button>
     </div>
 
     <div class="example">
@@ -88,8 +102,8 @@
                         label: 'Пётр',
                         image: './images/3.png',
                         position: {
-                            x: 300,
-                            y: 300
+                            x: 600,
+                            y: 420
                         }
                     }
                 ]
@@ -185,6 +199,16 @@
         }
     })
 
+    document.getElementById('api-show_point').addEventListener('click', (e) => {
+        e.preventDefault()
+        let value = document.getElementById('show-id').value
+
+        if (value) {
+            let location = map.getActiveLocation()
+            location.moveToPoint(value)
+        }
+    })
+
     document.getElementById('api-add').addEventListener('click', (e) => {
         e.preventDefault()
 
@@ -217,6 +241,22 @@
 
         let location = map.getActiveLocation()
         location.movePoint(id, x, y)
+    })
+
+
+    document.getElementById('api-view_mode').addEventListener('click', (e) => {
+        e.preventDefault()
+
+        let location = map.getActiveLocation()
+        location.setViewMode()
+
+    })
+
+    document.getElementById('api-edit_mode').addEventListener('click', (e) => {
+        e.preventDefault()
+
+        let location = map.getActiveLocation()
+        location.setEditMode()
     })
 </script>
 </body>

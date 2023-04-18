@@ -15,13 +15,15 @@ class Location {
         left: 0,
         top: 0
     };
+    editable = false;
 
     /**
      * @param {Object} params
      * @param {string} params.id
      * @param {string} params.name
      * @param {string} params.image
-     * @param {[]} params.points
+     * @param {boolean} params.image
+     * @param {[]} params.editable
      */
     constructor(params) {
         if (!params.id) {
@@ -31,6 +33,7 @@ class Location {
         this.id = params.id
         this.name = params.name
         this.image = params.image
+        this.editable = params.editable === true
 
         if (typeof params.size == 'object') {
             this.size = params.size
@@ -63,6 +66,7 @@ class Location {
      * @param {{x:string, y:string}} pointParams.position
      */
     addPoint(pointParams) {
+
         if (this.points.filter((p) => p.id == pointParams.id).length > 0) {
             throw new Error('Points id must be unique ');
         }
@@ -82,17 +86,24 @@ class Location {
      */
     deletePoint(id) {
 
-        let points = this.points.filter((p) => p.id == id)
+        if (!this.isEditable()) {
+            return
+        }
 
-        if (points.length > 0) {
-            let point = points[0]
+        let point = this.getPointById(id)
+
+        if (point !== null) {
             this.erasePoint(point)
-
             this.points = this.points.filter((p) => p.id != id)
         }
     }
 
     movePoint(id, x, y) {
+
+        if (!this.isEditable()) {
+            return
+        }
+
         let points = this.points.filter((p) => p.id == id)
 
         if (points.length > 0) {
@@ -188,6 +199,7 @@ class Location {
     }
 
     manageMove() {
+
         this.container.style.cursor = 'grab'
 
         let pos = {x: 0, y: 0}
@@ -288,29 +300,31 @@ class Location {
         pointNode.style.top = point.position.y + 'px'
         pointNode.style.border = '2px solid #868686'
 
-        // Перемещение точки
-        let lastMouseMoveEvent = null;
-        const onMouseMove = (e) => {
-            let deltaX = e.clientX - lastMouseMoveEvent.clientX;
-            let deltaY = e.clientY - lastMouseMoveEvent.clientY;
+        if (this.isEditable()) {
+            // Перемещение точки
+            let lastMouseMoveEvent = null;
+            const onMouseMove = (e) => {
+                let deltaX = e.clientX - lastMouseMoveEvent.clientX;
+                let deltaY = e.clientY - lastMouseMoveEvent.clientY;
 
-            point.position.x = parseFloat(point.position.x) + (deltaX / this.positionParams.scale);
-            point.position.y = parseFloat(point.position.y) + (deltaY / this.positionParams.scale);
+                point.position.x = parseFloat(point.position.x) + (deltaX / this.positionParams.scale);
+                point.position.y = parseFloat(point.position.y) + (deltaY / this.positionParams.scale);
 
-            pointNode.style.left = point.position.x + 'px';
-            pointNode.style.top = point.position.y + 'px';
+                pointNode.style.left = point.position.x + 'px';
+                pointNode.style.top = point.position.y + 'px';
 
-            lastMouseMoveEvent = e;
+                lastMouseMoveEvent = e;
+            }
+            pointNode.addEventListener('mousedown', (e) => {
+                lastMouseMoveEvent = e;
+                this.lock()
+                document.addEventListener('mousemove', onMouseMove);
+            });
+            pointNode.addEventListener('mouseup', () => {
+                this.unlock()
+                document.removeEventListener('mousemove', onMouseMove);
+            });
         }
-        pointNode.addEventListener('mousedown', (e) => {
-            lastMouseMoveEvent = e;
-            this.lock()
-            document.addEventListener('mousemove', onMouseMove);
-        });
-        pointNode.addEventListener('mouseup', () => {
-            this.unlock()
-            document.removeEventListener('mousemove', onMouseMove);
-        });
 
         this.container.appendChild(pointNode)
     }
@@ -325,6 +339,74 @@ class Location {
 
         if (pointNode) {
             pointNode.remove()
+        }
+    }
+
+    /**
+     * Проверка активности режима редактирования
+     * @returns {boolean}
+     */
+    isEditable() {
+        return this.editable === true
+    }
+
+    /**
+     * Установка режима просмотра
+     */
+    setViewMode() {
+        this.editable = false
+        this.renderAllPoints()
+    }
+
+    /**
+     * Установка режима редактирования
+     */
+    setEditMode() {
+        this.editable = true
+        this.renderAllPoints()
+    }
+
+    /**
+     * Получение точки по id
+     * @param {string} id
+     * @returns {Point|null}
+     */
+    getPointById(id) {
+        let points = this.points.filter((p) => p.id == id)
+
+        if (points.length > 0) {
+            return points[0]
+        }
+
+        return null
+    }
+
+    /**
+     * Перемещение к точке по id
+     * @param {string} id
+     */
+    moveToPoint(id) {
+        let point = this.getPointById(id)
+
+        if (point !== null) {
+            let x = point.position.x
+            let y = point.position.y
+
+            this.positionParams.left = (x * this.positionParams.scale * (-1)) + (this.container.parentNode.clientWidth / 2)
+            this.positionParams.top = (y * this.positionParams.scale * (-1)) + (this.container.parentNode.clientHeight / 2)
+
+            this.transformContainer(this.positionParams.scale, this.positionParams.left, this.positionParams.top)
+
+            let pointNodeSelector = '#'+this.id + '_' + point.id
+            let pointNode = this.container.querySelector(pointNodeSelector)
+
+            if(pointNode) {
+                pointNode.classList.add('found')
+
+                setTimeout(function(){
+                    pointNode.classList.remove('found')
+                }, 200)
+            }
         }
     }
 }

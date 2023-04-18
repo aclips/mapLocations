@@ -12,12 +12,41 @@ body::after {
     filter: grayscale(100%);
 }
 
+
+/**
+ * API
+ */
+
+.api {
+
+}
+
+.api .example {
+
+}
+
+.api .example .label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .map {
     background-image: url('./images/backmap.jpg');
 }
 
 .location.lock .map-image {
     filter: grayscale(100%);
+}
+
+.point {
+    transition-property: border, opacity;
+    transition-duration: 0.5s;
+
+}
+
+.point.found {
+    border: 2px solid red !important;
+    opacity: 0.2 !important;
 }
 
 h1 {
