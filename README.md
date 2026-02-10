@@ -14,7 +14,7 @@
 ---
 
 ## Быстрый старт
-
+```
 <div class="map" id="MAP_ID"></div>
 <div class="panel" id="PANEL"></div>
 
@@ -39,7 +39,7 @@ let panel = new Panel('PANEL', map, {
     labels: { panelName: 'Пользователи', saveBtn: 'Сохранить', addUserBtn: 'Добавить' }
 })
 </script>
-
+```
 ---
 
 ## API основные методы
